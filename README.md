@@ -1,9 +1,15 @@
 # Alternate Poses
 
-An addon for [Hugs and More](https://github.com/faytleingod499/HugsAndMore) (1.3.1 or newer, required) that adds more
-two-player emotes to its **F** menu: **side hug**, **hold hands**, **twirl** and **bow**.
+**An addon for [Hugs and More](https://github.com/faytleingod499/HugsAndMore)**: it needs Hugs and More 1.3.1 or newer and
+does nothing without it. It adds more two-player emotes to Hugs and More's **F** menu: **side hug**, **hold hands**, **twirl**
+and **bow**.
 
 *This mod was created with the assistance of AI.*
+
+## Requirements
+- [GDWeave](https://thunderstore.io/c/webfishing/p/NotNet/GDWeave/)
+- [Hugs and More](https://github.com/faytleingod499/HugsAndMore) 1.3.1 or newer (listed as a dependency in both the GDWeave
+  manifest, `"Dependencies": ["HugsAndMore"]`, and the Thunderstore manifest)
 
 Both players need Hugs and More and Alternate Poses. Walk up to a player who has them: the **F  Interact** tag appears, F opens
 the menu, and they say yes with **Y** or the button. Works on any server.

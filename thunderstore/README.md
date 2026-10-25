@@ -1,8 +1,16 @@
 # Alternate Poses
 
-More emotes for [Hugs and More](https://thunderstore.io/c/webfishing/p/Fayt/Hugs_and_More/), which this mod needs: **side hug**, **hold hands**, **twirl** and **bow**.
+**An addon for [Hugs and More](https://thunderstore.io/c/webfishing/p/Fayt/Hugs_and_More/).** It does nothing without it:
+Hugs and More 1.3.1 or newer is required (Thunderstore installs it for you as a dependency).
+
+It adds more emotes to the Hugs and More menu: **side hug**, **hold hands**, **twirl** and **bow**.
 
 *This mod was created with the assistance of AI.*
+
+## Requirements
+
+- [GDWeave](https://thunderstore.io/c/webfishing/p/NotNet/GDWeave/)
+- [Hugs and More](https://thunderstore.io/c/webfishing/p/Fayt/Hugs_and_More/) 1.3.1 or newer
 
 ## How to use it
 
@@ -15,12 +23,12 @@ It works through the Hugs and More menu:
 Nobody is pulled into anything without saying yes. If the other player doesn't have Alternate Poses, the new emotes
 simply don't appear in the menu for them.
 
-- **Side hug**: you stand close side by side, each puts an arm round the other's waist, and you sway a little.
-- **Hold hands**: side by side and close, your arms stay straight and point down, and the two hands that are next to each other join and swing a little. It lasts until one of you walks away.
+- **Side hug**: you stand close side by side, each puts a hand on the other's waist, and you sway a little.
+- **Hold hands**: side by side, your arms stay straight and point down, and the two hands that are next to each other meet and swing a little. It lasts until one of you walks away.
 - **Twirl**: holding hands, you keep turning around each other. It lasts until one of you walks away.
 - **Bow**: you face each other and both bow.
 
-They fit any sizes, and end after a few seconds (hold hands and twirl: when someone walks away) or as soon as either of you walks away.
+They fit any sizes. Side hug and bow end after a few seconds, or as soon as either of you walks away.
 
 ## Multiplayer
 
