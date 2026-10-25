@@ -1,3 +1,6 @@
+## 1.3.4
+- New icon: two smiling friends with a heart (the old one looked suggestive to some people). No change to the poses.
+
 ## 1.3.3
 - Side hug: the two of you now stand side by side with your bodies touching at the sides, each with an arm round behind the other's back.
 
