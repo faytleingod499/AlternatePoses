@@ -15,12 +15,12 @@ It works through the Hugs and More menu:
 Nobody is pulled into anything without saying yes. If the other player doesn't have Alternate Poses, the new emotes
 simply don't appear in the menu for them.
 
-- **Side hug**: you stand side by side, each puts an arm round the other's back, and you lean your heads together and sway a little.
+- **Side hug**: you stand close side by side, each puts an arm round the other's waist, and you sway a little.
 - **Hold hands**: side by side, you join the two hands that are next to each other and swing them a little. It lasts until one of you walks away.
-- **Twirl**: holding hands, you turn once around each other.
+- **Twirl**: holding hands, you keep turning around each other. It lasts until one of you walks away.
 - **Bow**: you face each other and both bow.
 
-They fit any sizes, and end after a few seconds (hold hands: when someone walks away) or as soon as either of you walks away.
+They fit any sizes, and end after a few seconds (hold hands and twirl: when someone walks away) or as soon as either of you walks away.
 
 ## Multiplayer
 

@@ -8,7 +8,7 @@ extends Node
 # players who have it). Nothing here sends anything by itself: the invitation and the sync go through Hugs
 # and More; this mod only announces that it is installed ("alternateposes_v") and draws the poses.
 
-const VERSION = "1.1.0"
+const VERSION = "1.2.0"
 const NEEDS_API = 2          # Hugs and More 1.3.1 or newer
 const API_META = "hugsandmore_api"
 const ANNOUNCE_KEY = "alternateposes_v"
@@ -26,7 +26,7 @@ var reported_missing = false
 const EMOTES = {
 	"sidehug": {"label": "Side hug", "ask": "wants a side hug!", "answer": "Hug", "time": 4.0, "method": "pose_sidehug"},
 	"holdhands": {"label": "Hold hands", "ask": "wants to hold hands!", "answer": "Hold hands", "time": 0.0, "move_limit": 0.4, "method": "pose_holdhands"},
-	"twirl": {"label": "Twirl", "ask": "wants to twirl with you!", "answer": "Twirl", "time": 4.2, "method": "pose_twirl"},
+	"twirl": {"label": "Twirl", "ask": "wants to twirl with you!", "answer": "Twirl", "time": 0.0, "move_limit": 0.4, "method": "pose_twirl"},
 	"bow": {"label": "Bow", "ask": "bows to you!", "answer": "Bow back", "time": 2.4, "method": "pose_bow"},
 }
 const ORDER = ["sidehug", "holdhands", "twirl", "bow"]
@@ -140,31 +140,16 @@ func _hearts_now_and_then(p, h, at, every):
 # Side by side, facing the same way, each puts the arm nearest the other round the other's back and they
 # lean their heads together and sway a little.
 
-const SIDEHUG_SEP_MIN = 0.65 # how far apart they stand at least / at most (times their average size): the big heads
-const SIDEHUG_SEP_MAX = 0.95 # keep them apart, the length of their arms sets it in between
-const SIDEHUG_HEAD_TIP = 8.0
-
-# how far apart two players can stand so that each can still reach round the other's back
-func _sidehug_sep(h, pa, pb):
-	var best = 99.0
-	for pair in [[pa, pb], [pb, pa]]:
-		var arm = _arm_size(h, pair[0])
-		var their = h._player_size(pair[1])
-		var drop = 0.30 * their
-		var back = 0.16 * their
-		var lateral = sqrt(max(pow(0.92 * arm[0], 2) - drop * drop - back * back, 0.01))
-		best = min(best, lateral + arm[1])
-	var avg = (h._player_size(pa) + h._player_size(pb)) / 2.0
-	return clamp(best, SIDEHUG_SEP_MIN * avg, SIDEHUG_SEP_MAX * avg)
+const SIDEHUG_DIST = 0.40    # how far from the middle each one stands (times their size): close, the arms are short
+const SIDEHUG_HEAD_TIP = 8.0 # degrees: the heads are big, so they tip away from each other
 
 func pose_sidehug(p, h):
 	var fr = _side_frame(p, h)
 	var sa = h._player_size(p["pa"])
 	var sb = h._player_size(p["pb"])
-	var sep = _sidehug_sep(h, p["pa"], p["pb"])
 	var sway = deg2rad(3.0) * sin(p["t"] * 2.0) * p["w"]
-	var spot_a = fr["mid"] + fr["left"] * fr["side_a"] * sep / 2.0
-	var spot_b = fr["mid"] + fr["left"] * fr["side_b"] * sep / 2.0
+	var spot_a = fr["mid"] + fr["left"] * fr["side_a"] * SIDEHUG_DIST * sa
+	var spot_b = fr["mid"] + fr["left"] * fr["side_b"] * SIDEHUG_DIST * sb
 	_sidehug_one(p, h, p["pa"], fr, fr["side_a"], spot_a, spot_b, sb, sway)
 	_sidehug_one(p, h, p["pb"], fr, fr["side_b"], spot_b, spot_a, sa, sway)
 	_hearts_now_and_then(p, h, Vector3(fr["mid"].x, max(h._head_y(p["pa"]), h._head_y(p["pb"])) + 0.8 * max(sa, sb), fr["mid"].z), 1.8)
@@ -176,11 +161,11 @@ func _sidehug_one(p, h, node, fr, side, spot, their_spot, their_size, sway):
 		return
 	var toward = -fr["left"] * side           # the way my partner is
 	var other = p["pb"] if node == p["pa"] else p["pa"]
-	# the hand goes to the middle of my partner's back, a bit below their shoulders
+	# the hand rests on my partner's waist on the side next to me, a little behind
 	var y = h._shoulder_y(other) - 0.30 * their_size
-	var target = Vector3(their_spot.x, y, their_spot.z) - fr["front"] * 0.16 * their_size
+	var target = Vector3(their_spot.x, y, their_spot.z) - toward * 0.15 * their_size - fr["front"] * 0.06 * their_size
 	h._reach(body, -side, target, Vector3.DOWN * 0.7 - fr["front"] * 0.5, fr["left"], p["w"])
-	h._tilt_head_toward(body, fr["front"], toward, SIDEHUG_HEAD_TIP, p["w"])
+	h._tilt_head_toward(body, fr["front"], -toward, SIDEHUG_HEAD_TIP, p["w"])
 
 
 # --- hold hands ---
@@ -228,11 +213,15 @@ func _hold_one(p, h, node, fr, side, dist, turn, rot, contact, calm):
 
 
 # --- twirl ---
-# Holding hands, they turn once around each other.
+# Holding hands, they keep turning around each other until one of them walks away.
+
+const TWIRL_SPEED = 2.0      # radians a second: a turn in about three seconds
+const TWIRL_EASE = 1.0       # seconds it takes to get up to speed
 
 func pose_twirl(p, h):
-	var turn = TAU * smoothstep(0.5, 3.6, p["t"])
-	_hold(p, h, turn, 0.0, false)
+	var t = p["t"]
+	var turn = TWIRL_SPEED * (t * t / (2.0 * TWIRL_EASE) if t < TWIRL_EASE else t - TWIRL_EASE / 2.0)
+	_hold(p, h, fmod(turn, TAU), 0.0, false)
 
 
 # --- bow ---

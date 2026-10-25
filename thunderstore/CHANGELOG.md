@@ -1,3 +1,8 @@
+## 1.2.0
+- Twirl keeps going until one of you walks away (no time limit), like hold hands.
+- Side hug: you stand closer together, each with a hand on the other's waist, and your heads tip away from each other
+  so the big heads don't sink into each other.
+
 ## 1.1.0
 - Removed the fist bump (too close to the high five).
 - Hold hands: you stand closer together with your elbows bent, your heads tip away from each other, and it
