@@ -16,7 +16,7 @@ Nobody is pulled into anything without saying yes. If the other player doesn't h
 simply don't appear in the menu for them.
 
 - **Side hug**: you stand close side by side, each puts an arm round the other's waist, and you sway a little.
-- **Hold hands**: side by side, you join the two hands that are next to each other and swing them a little. It lasts until one of you walks away.
+- **Hold hands**: side by side and close, your arms stay straight and point down, and the two hands that are next to each other join and swing a little. It lasts until one of you walks away.
 - **Twirl**: holding hands, you keep turning around each other. It lasts until one of you walks away.
 - **Bow**: you face each other and both bow.
 

@@ -8,7 +8,7 @@ extends Node
 # players who have it). Nothing here sends anything by itself: the invitation and the sync go through Hugs
 # and More; this mod only announces that it is installed ("alternateposes_v") and draws the poses.
 
-const VERSION = "1.2.0"
+const VERSION = "1.3.0"
 const NEEDS_API = 2          # Hugs and More 1.3.1 or newer
 const API_META = "hugsandmore_api"
 const ANNOUNCE_KEY = "alternateposes_v"
@@ -171,8 +171,8 @@ func _sidehug_one(p, h, node, fr, side, spot, their_spot, their_size, sway):
 # --- hold hands ---
 # Side by side, the two hands that are next to each other join between them and swing a little.
 
-const HOLD_DIST = 0.45       # how far from the middle each one stands (times their size): close, with the elbows bent
-const HOLD_DROP = 0.30       # how far below the shoulder the joined hands hang (times the arm length)
+const HOLD_ANGLE = 10.0      # degrees the straight arms swing inward from hanging straight down: this sets how close they stand
+const HOLD_HEAD_TIP = 20.0   # the heads are big, so at this distance they tip away from each other
 const HOLD_SWING = 0.10      # how far the hands swing forward and back (times their average size)
 
 func pose_holdhands(p, h):
@@ -185,12 +185,17 @@ func _hold(p, h, turn, swing, calm):
 	var fr = _side_frame(p, h)
 	var sa = h._player_size(p["pa"])
 	var sb = h._player_size(p["pb"])
-	var da = HOLD_DIST * sa
-	var db = HOLD_DIST * sb
+	var aa = _arm_size(h, p["pa"])
+	var ab = _arm_size(h, p["pb"])
+	# arms straight and pointing (almost) down: the near hands only have to swing sideways to meet, so each stands
+	# about a shoulder's width plus that swing from the middle
+	var da = aa[1] + aa[0] * sin(deg2rad(HOLD_ANGLE))
+	var db = ab[1] + ab[0] * sin(deg2rad(HOLD_ANGLE))
 	var rot = Basis(Vector3.UP, turn)
 	var swing_at = fr["front"] * HOLD_SWING * (sa + sb) / 2.0 * sin(p["t"] * 2.6) * swing * p["w"]
-	var drop = HOLD_DROP * (_arm_size(h, p["pa"])[0] + _arm_size(h, p["pb"])[0]) / 2.0
-	var contact = Vector3(fr["mid"].x, (h._shoulder_y(p["pa"]) + h._shoulder_y(p["pb"])) / 2.0 - drop, fr["mid"].z) + swing_at
+	var low_a = h._shoulder_y(p["pa"]) - aa[0] * cos(deg2rad(HOLD_ANGLE))
+	var low_b = h._shoulder_y(p["pb"]) - ab[0] * cos(deg2rad(HOLD_ANGLE))
+	var contact = Vector3(fr["mid"].x, (low_a + low_b) / 2.0, fr["mid"].z) + swing_at
 	_hold_one(p, h, p["pa"], fr, fr["side_a"], da, turn, rot, contact, calm)
 	_hold_one(p, h, p["pb"], fr, fr["side_b"], db, turn, rot, contact, calm)
 	if calm:
@@ -207,9 +212,9 @@ func _hold_one(p, h, node, fr, side, dist, turn, rot, contact, calm):
 	var left = rot.xform(fr["left"])
 	var front = rot.xform(fr["front"])
 	var away = left * side
-	h._reach(body, -side, contact, Vector3.DOWN - front * 0.2 + away * 0.3, left, p["w"])
+	h._reach(body, -side, contact, Vector3.DOWN, left, p["w"])
 	# the heads are big, so they tip away from each other
-	h._tilt_head_toward(body, front, away, 12.0, p["w"])
+	h._tilt_head_toward(body, front, away, HOLD_HEAD_TIP, p["w"])
 
 
 # --- twirl ---

@@ -1,3 +1,7 @@
+## 1.3.0
+- Hold hands and twirl: you now stand close enough that your arms stay straight and point down, and the near hands just
+  swing sideways to meet. Your heads tip away from each other more, as the big heads are close.
+
 ## 1.2.0
 - Twirl keeps going until one of you walks away (no time limit), like hold hands.
 - Side hug: you stand closer together, each with a hand on the other's waist, and your heads tip away from each other
