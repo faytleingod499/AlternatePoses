@@ -1,6 +1,6 @@
 # Alternate Poses
 
-**An addon for [Hugs and More](https://thunderstore.io/c/webfishing/p/Fayt/Hugs_and_More/).** It does nothing without it:
+**An addon for [Hugs and More](https://thunderstore.io/c/webfishing/p/EthersWolfPark/Hugs_and_More/).** It does nothing without it:
 Hugs and More 1.3.1 or newer is required (Thunderstore installs it for you as a dependency).
 
 It adds more emotes to the Hugs and More menu: **side hug**, **hold hands**, **twirl** and **bow**.
@@ -10,7 +10,7 @@ It adds more emotes to the Hugs and More menu: **side hug**, **hold hands**, **t
 ## Requirements
 
 - [GDWeave](https://thunderstore.io/c/webfishing/p/NotNet/GDWeave/)
-- [Hugs and More](https://thunderstore.io/c/webfishing/p/Fayt/Hugs_and_More/) 1.3.1 or newer
+- [Hugs and More](https://thunderstore.io/c/webfishing/p/EthersWolfPark/Hugs_and_More/) 1.3.1 or newer
 
 ## How to use it
 
