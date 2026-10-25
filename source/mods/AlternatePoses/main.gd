@@ -8,7 +8,7 @@ extends Node
 # players who have it). Nothing here sends anything by itself: the invitation and the sync go through Hugs
 # and More; this mod only announces that it is installed ("alternateposes_v") and draws the poses.
 
-const VERSION = "1.3.1"
+const VERSION = "1.3.2"
 const NEEDS_API = 2          # Hugs and More 1.3.1 or newer
 const API_META = "hugsandmore_api"
 const ANNOUNCE_KEY = "alternateposes_v"
@@ -140,7 +140,7 @@ func _hearts_now_and_then(p, h, at, every):
 # Side by side, facing the same way, each puts the arm nearest the other round the other's back and they
 # lean their heads together and sway a little.
 
-const SIDEHUG_DIST = 0.40    # how far from the middle each one stands (times their size): close, the arms are short
+const SIDEHUG_DIST = 0.36    # how far from the middle each one stands (times their size): close, the arms are short
 const SIDEHUG_HEAD_TIP = 8.0 # degrees: the heads are big, so they tip away from each other
 
 func pose_sidehug(p, h):
@@ -161,10 +161,11 @@ func _sidehug_one(p, h, node, fr, side, spot, their_spot, their_size, sway):
 		return
 	var toward = -fr["left"] * side           # the way my partner is
 	var other = p["pb"] if node == p["pa"] else p["pa"]
-	# the hand rests on my partner's waist on the side next to me, a little behind
-	var y = h._shoulder_y(other) - 0.30 * their_size
-	var target = Vector3(their_spot.x, y, their_spot.z) - toward * 0.15 * their_size - fr["front"] * 0.06 * their_size
-	h._reach(body, -side, target, Vector3.DOWN * 0.7 - fr["front"] * 0.5, fr["left"], p["w"])
+	# the arm goes round behind my partner: the hand rests on the back of their waist, level with their near edge,
+	# so it is clearly not the hands-meeting-in-front-of-us of hold hands
+	var y = h._shoulder_y(other) - 0.40 * their_size
+	var target = Vector3(their_spot.x, y, their_spot.z) - toward * 0.20 * their_size - fr["front"] * 0.24 * their_size
+	h._reach(body, -side, target, Vector3.DOWN * 0.5 - fr["front"] * 0.7, fr["left"], p["w"])
 	h._tilt_head_toward(body, fr["front"], -toward, SIDEHUG_HEAD_TIP, p["w"])
 
 
