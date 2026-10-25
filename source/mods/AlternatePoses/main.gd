@@ -8,7 +8,7 @@ extends Node
 # players who have it). Nothing here sends anything by itself: the invitation and the sync go through Hugs
 # and More; this mod only announces that it is installed ("alternateposes_v") and draws the poses.
 
-const VERSION = "1.3.2"
+const VERSION = "1.3.3"
 const NEEDS_API = 2          # Hugs and More 1.3.1 or newer
 const API_META = "hugsandmore_api"
 const ANNOUNCE_KEY = "alternateposes_v"
@@ -140,8 +140,8 @@ func _hearts_now_and_then(p, h, at, every):
 # Side by side, facing the same way, each puts the arm nearest the other round the other's back and they
 # lean their heads together and sway a little.
 
-const SIDEHUG_DIST = 0.36    # how far from the middle each one stands (times their size): close, the arms are short
-const SIDEHUG_HEAD_TIP = 8.0 # degrees: the heads are big, so they tip away from each other
+const SIDEHUG_DIST = 0.25    # how far from the middle each one stands (times their size): the sides of the bodies touch
+const SIDEHUG_HEAD_TIP = 14.0 # degrees: the heads are big, so they tip away from each other
 
 func pose_sidehug(p, h):
 	var fr = _side_frame(p, h)
@@ -161,11 +161,11 @@ func _sidehug_one(p, h, node, fr, side, spot, their_spot, their_size, sway):
 		return
 	var toward = -fr["left"] * side           # the way my partner is
 	var other = p["pb"] if node == p["pa"] else p["pa"]
-	# the arm goes round behind my partner: the hand rests on the back of their waist, level with their near edge,
-	# so it is clearly not the hands-meeting-in-front-of-us of hold hands
+	# the bodies touch at the sides and the arm goes round behind my partner's back: the hand rests on the far
+	# side of their waist
 	var y = h._shoulder_y(other) - 0.40 * their_size
-	var target = Vector3(their_spot.x, y, their_spot.z) - toward * 0.20 * their_size - fr["front"] * 0.24 * their_size
-	h._reach(body, -side, target, Vector3.DOWN * 0.5 - fr["front"] * 0.7, fr["left"], p["w"])
+	var target = Vector3(their_spot.x, y, their_spot.z) + toward * 0.15 * their_size - fr["front"] * 0.16 * their_size
+	h._reach(body, -side, target, Vector3.DOWN * 0.3 - fr["front"] * 0.8, fr["left"], p["w"])
 	h._tilt_head_toward(body, fr["front"], -toward, SIDEHUG_HEAD_TIP, p["w"])
 
 
