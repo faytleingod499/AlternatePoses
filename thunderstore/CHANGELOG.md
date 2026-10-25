@@ -1,3 +1,7 @@
+## 1.3.1
+- Hold hands and twirl: a little more room between you than in 1.3.0 (which was too close), still with straight arms
+  pointing down and the hands meeting in the middle.
+
 ## 1.3.0
 - Hold hands and twirl: you now stand close enough that your arms stay straight and point down, and the near hands just
   swing sideways to meet. Your heads tip away from each other more, as the big heads are close.

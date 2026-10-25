@@ -8,7 +8,7 @@ extends Node
 # players who have it). Nothing here sends anything by itself: the invitation and the sync go through Hugs
 # and More; this mod only announces that it is installed ("alternateposes_v") and draws the poses.
 
-const VERSION = "1.3.0"
+const VERSION = "1.3.1"
 const NEEDS_API = 2          # Hugs and More 1.3.1 or newer
 const API_META = "hugsandmore_api"
 const ANNOUNCE_KEY = "alternateposes_v"
@@ -171,8 +171,9 @@ func _sidehug_one(p, h, node, fr, side, spot, their_spot, their_size, sway):
 # --- hold hands ---
 # Side by side, the two hands that are next to each other join between them and swing a little.
 
-const HOLD_ANGLE = 10.0      # degrees the straight arms swing inward from hanging straight down: this sets how close they stand
-const HOLD_HEAD_TIP = 20.0   # the heads are big, so at this distance they tip away from each other
+const HOLD_DIST = 0.37       # how far from the middle each one stands (times their size). 0.45 was too far apart, 0.29 too close
+const HOLD_MAX_ANGLE = 25.0  # the straight arms never swing further inward than this (degrees from hanging straight down)
+const HOLD_HEAD_TIP = 16.0   # the heads are big, so at this distance they tip away from each other
 const HOLD_SWING = 0.10      # how far the hands swing forward and back (times their average size)
 
 func pose_holdhands(p, h):
@@ -187,14 +188,15 @@ func _hold(p, h, turn, swing, calm):
 	var sb = h._player_size(p["pb"])
 	var aa = _arm_size(h, p["pa"])
 	var ab = _arm_size(h, p["pb"])
-	# arms straight and pointing (almost) down: the near hands only have to swing sideways to meet, so each stands
-	# about a shoulder's width plus that swing from the middle
-	var da = aa[1] + aa[0] * sin(deg2rad(HOLD_ANGLE))
-	var db = ab[1] + ab[0] * sin(deg2rad(HOLD_ANGLE))
+	# the arms stay straight and point (nearly) down: the near hands swing sideways from the shoulder to the middle
+	var da = HOLD_DIST * sa
+	var db = HOLD_DIST * sb
+	var reach_a = clamp(da - aa[1], 0.0, aa[0] * sin(deg2rad(HOLD_MAX_ANGLE)))   # how far sideways the hand has to go
+	var reach_b = clamp(db - ab[1], 0.0, ab[0] * sin(deg2rad(HOLD_MAX_ANGLE)))
 	var rot = Basis(Vector3.UP, turn)
 	var swing_at = fr["front"] * HOLD_SWING * (sa + sb) / 2.0 * sin(p["t"] * 2.6) * swing * p["w"]
-	var low_a = h._shoulder_y(p["pa"]) - aa[0] * cos(deg2rad(HOLD_ANGLE))
-	var low_b = h._shoulder_y(p["pb"]) - ab[0] * cos(deg2rad(HOLD_ANGLE))
+	var low_a = h._shoulder_y(p["pa"]) - sqrt(max(aa[0] * aa[0] - reach_a * reach_a, 0.01))
+	var low_b = h._shoulder_y(p["pb"]) - sqrt(max(ab[0] * ab[0] - reach_b * reach_b, 0.01))
 	var contact = Vector3(fr["mid"].x, (low_a + low_b) / 2.0, fr["mid"].z) + swing_at
 	_hold_one(p, h, p["pa"], fr, fr["side_a"], da, turn, rot, contact, calm)
 	_hold_one(p, h, p["pb"], fr, fr["side_b"], db, turn, rot, contact, calm)
