@@ -1,6 +1,6 @@
 # Alternate Poses
 
-More emotes for [Hugs and More](https://thunderstore.io/c/webfishing/p/Fayt/Hugs_and_More/), which this mod needs: **side hug**, **hold hands**, **fist bump**, **twirl** and **bow**.
+More emotes for [Hugs and More](https://thunderstore.io/c/webfishing/p/Fayt/Hugs_and_More/), which this mod needs: **side hug**, **hold hands**, **twirl** and **bow**.
 
 *This mod was created with the assistance of AI.*
 
@@ -16,12 +16,11 @@ Nobody is pulled into anything without saying yes. If the other player doesn't h
 simply don't appear in the menu for them.
 
 - **Side hug**: you stand side by side, each puts an arm round the other's back, and you lean your heads together and sway a little.
-- **Hold hands**: side by side, you join the two hands that are next to each other and swing them a little.
-- **Fist bump**: face to face, you stretch out your right arms and bump fists.
+- **Hold hands**: side by side, you join the two hands that are next to each other and swing them a little. It lasts until one of you walks away.
 - **Twirl**: holding hands, you turn once around each other.
 - **Bow**: you face each other and both bow.
 
-They fit any sizes, and end after a few seconds or as soon as either of you walks away.
+They fit any sizes, and end after a few seconds (hold hands: when someone walks away) or as soon as either of you walks away.
 
 ## Multiplayer
 

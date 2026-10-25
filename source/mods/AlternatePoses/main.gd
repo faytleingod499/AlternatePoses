@@ -1,14 +1,15 @@
 extends Node
 
-# Alternate Poses: an addon for Hugs and More (needs Hugs and More 1.3.0 or newer).
+# Alternate Poses: an addon for Hugs and More (needs Hugs and More 1.3.1 or newer).
 #
-# It adds more two-player emotes to the F menu of Hugs and More: a side hug, holding hands, a fist bump,
+# It adds more two-player emotes to the F menu of Hugs and More: a side hug, holding hands,
 # a twirl and a bow. They work exactly like the hug, high five and kiss: press F near a player, pick one,
 # they say yes, and both of you play it. Both players need Alternate Poses (the menu only offers these to
 # players who have it). Nothing here sends anything by itself: the invitation and the sync go through Hugs
 # and More; this mod only announces that it is installed ("alternateposes_v") and draws the poses.
 
-const VERSION = "1.0.0"
+const VERSION = "1.1.0"
+const NEEDS_API = 2          # Hugs and More 1.3.1 or newer
 const API_META = "hugsandmore_api"
 const ANNOUNCE_KEY = "alternateposes_v"
 const SKELETON_PATH = "body/player_body/Armature/Skeleton"
@@ -24,12 +25,11 @@ var reported_missing = false
 # the emotes: id -> what Hugs and More needs to know, and the method that draws it
 const EMOTES = {
 	"sidehug": {"label": "Side hug", "ask": "wants a side hug!", "answer": "Hug", "time": 4.0, "method": "pose_sidehug"},
-	"holdhands": {"label": "Hold hands", "ask": "wants to hold hands!", "answer": "Hold hands", "time": 5.0, "method": "pose_holdhands"},
-	"fistbump": {"label": "Fist bump", "ask": "wants a fist bump!", "answer": "Bump", "time": 1.8, "method": "pose_fistbump"},
+	"holdhands": {"label": "Hold hands", "ask": "wants to hold hands!", "answer": "Hold hands", "time": 0.0, "move_limit": 0.4, "method": "pose_holdhands"},
 	"twirl": {"label": "Twirl", "ask": "wants to twirl with you!", "answer": "Twirl", "time": 4.2, "method": "pose_twirl"},
 	"bow": {"label": "Bow", "ask": "bows to you!", "answer": "Bow back", "time": 2.4, "method": "pose_bow"},
 }
-const ORDER = ["sidehug", "holdhands", "fistbump", "twirl", "bow"]
+const ORDER = ["sidehug", "holdhands", "twirl", "bow"]
 
 
 func _ready():
@@ -49,12 +49,13 @@ func _process(delta):
 	if found != hugs:
 		_unregister()
 		hugs = null
-		if found != null and is_instance_valid(found) and found.has_method("register_emote"):
+		if found != null and is_instance_valid(found) and found.has_method("register_emote") \
+				and found.has_method("api_version") and found.api_version() >= NEEDS_API:
 			hugs = found
 			_register()
 	if hugs == null and not reported_missing and clock > 20.0:
 		reported_missing = true
-		print("[AlternatePoses] Hugs and More 1.3.0 or newer was not found: the extra poses are not available")
+		print("[AlternatePoses] Hugs and More 1.3.1 or newer was not found: the extra poses are not available")
 	if clock >= next_announce:
 		next_announce = clock + 3.0
 		_announce(VERSION if hugs != null else "")
@@ -64,7 +65,7 @@ func _register():
 	for id in ORDER:
 		var e = EMOTES[id]
 		hugs.register_emote(id, {"label": e["label"], "ask": e["ask"], "answer": e["answer"], "time": e["time"],
-			"node": self, "method": e["method"], "needs": ANNOUNCE_KEY})
+			"node": self, "method": e["method"], "needs": ANNOUNCE_KEY, "move_limit": e.get("move_limit", 0.6)})
 	print("[AlternatePoses] ", VERSION, " added ", ORDER.size(), " emotes to Hugs and More")
 
 
@@ -185,30 +186,22 @@ func _sidehug_one(p, h, node, fr, side, spot, their_spot, their_size, sway):
 # --- hold hands ---
 # Side by side, the two hands that are next to each other join between them and swing a little.
 
+const HOLD_DIST = 0.45       # how far from the middle each one stands (times their size): close, with the elbows bent
 const HOLD_DROP = 0.30       # how far below the shoulder the joined hands hang (times the arm length)
 const HOLD_SWING = 0.10      # how far the hands swing forward and back (times their average size)
-
-# where each one stands: how far from the middle, from how long their arms are
-func _hold_distance(h, node):
-	var arm = _arm_size(h, node)
-	var size = h._player_size(node)
-	var drop = HOLD_DROP * arm[0]
-	var lateral = sqrt(max(pow(0.92 * arm[0], 2) - drop * drop, 0.01))
-	return clamp(lateral + arm[1], 0.45 * size, 0.80 * size)
-
 
 func pose_holdhands(p, h):
 	_hold(p, h, 0.0, 1.0, true)
 
 
 # turn is how far the pair has turned about the middle, swing how much the hands swing, calm whether it is the
-# quiet kind (hearts, heads tipped apart) rather than the twirl
+# quiet kind (with hearts) rather than the twirl
 func _hold(p, h, turn, swing, calm):
 	var fr = _side_frame(p, h)
-	var da = _hold_distance(h, p["pa"])
-	var db = _hold_distance(h, p["pb"])
 	var sa = h._player_size(p["pa"])
 	var sb = h._player_size(p["pb"])
+	var da = HOLD_DIST * sa
+	var db = HOLD_DIST * sb
 	var rot = Basis(Vector3.UP, turn)
 	var swing_at = fr["front"] * HOLD_SWING * (sa + sb) / 2.0 * sin(p["t"] * 2.6) * swing * p["w"]
 	var drop = HOLD_DROP * (_arm_size(h, p["pa"])[0] + _arm_size(h, p["pb"])[0]) / 2.0
@@ -230,8 +223,8 @@ func _hold_one(p, h, node, fr, side, dist, turn, rot, contact, calm):
 	var front = rot.xform(fr["front"])
 	var away = left * side
 	h._reach(body, -side, contact, Vector3.DOWN - front * 0.2 + away * 0.3, left, p["w"])
-	if calm:
-		h._tilt_head_toward(body, fr["front"], away, 6.0, p["w"])
+	# the heads are big, so they tip away from each other
+	h._tilt_head_toward(body, front, away, 12.0, p["w"])
 
 
 # --- twirl ---
@@ -240,46 +233,6 @@ func _hold_one(p, h, node, fr, side, dist, turn, rot, contact, calm):
 func pose_twirl(p, h):
 	var turn = TAU * smoothstep(0.5, 3.6, p["t"])
 	_hold(p, h, turn, 0.0, false)
-
-
-# --- fist bump ---
-# Face to face like the high five (each steps to its own left so the big heads pass), the right arms
-# reach out straight and the fists meet at chest height.
-
-const BUMP_SIDESTEP = 0.60
-const BUMP_GAP = 0.22
-
-func pose_fistbump(p, h):
-	var frame = h._pair_frame(p)
-	var dir = frame[0]
-	var mid = frame[1]
-	var sa = h._player_size(p["pa"])
-	var sb = h._player_size(p["pb"])
-	var gap = BUMP_GAP * (sa + sb) / 2.0
-	var height = (h._shoulder_y(p["pa"]) + h._shoulder_y(p["pb"])) / 2.0 - 0.10 * min(sa, sb)
-	var short = p["pa"] if sa <= sb else p["pb"]
-	height = min(height, h._shoulder_y(short) + 0.1 * min(sa, sb))
-	var contact = Vector3(mid.x, height, mid.z)
-	var swing = smoothstep(0.25, 0.55, p["t"])
-	var back = 0.05 * smoothstep(0.6, 0.8, p["t"])
-	if p["t"] >= 0.55 and not p.get("bumped", false):
-		p["bumped"] = true
-		h._game_sound(p["pa"], "punch", 1.3, h.slap_sound, contact)
-	_bump_one(p, h, p["pa"], dir, mid, gap, sa, contact, swing, back)
-	_bump_one(p, h, p["pb"], -dir, mid, gap, sb, contact, swing, back)
-
-
-func _bump_one(p, h, node, dir, mid, gap, size, contact, swing, back):
-	var left = Vector3.UP.cross(dir).normalized()
-	var body = h._place_body(node, dir, mid + left * BUMP_SIDESTEP * size, gap, 0.0, p["w"])
-	if body == null:
-		return
-	var right = -left
-	var spot = body["spot"]
-	# the fist starts by my own chest and goes straight out to the meeting point
-	var tucked = Vector3(spot.x, h._shoulder_y(node) - 0.15 * size, spot.z) + right * 0.16 * size + dir * 0.02 * size
-	var target = tucked.linear_interpolate(contact - dir * 0.03 * size, swing) - dir * back * size
-	h._reach(body, -1, target, right * 0.6 + Vector3.DOWN, left, p["w"])
 
 
 # --- bow ---

@@ -1,7 +1,7 @@
 # Alternate Poses
 
-An addon for [Hugs and More](https://github.com/faytleingod499/HugsAndMore) (1.3.0 or newer, required) that adds more
-two-player emotes to its **F** menu: **side hug**, **hold hands**, **fist bump**, **twirl** and **bow**.
+An addon for [Hugs and More](https://github.com/faytleingod499/HugsAndMore) (1.3.1 or newer, required) that adds more
+two-player emotes to its **F** menu: **side hug**, **hold hands**, **twirl** and **bow**.
 
 *This mod was created with the assistance of AI.*
 

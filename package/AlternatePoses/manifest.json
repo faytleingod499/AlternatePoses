@@ -1,11 +1,13 @@
 {
     "Id": "AlternatePoses",
     "PackPath": "AlternatePoses.pck",
-    "Dependencies": ["HugsAndMore"],
+    "Dependencies": [
+        "HugsAndMore"
+    ],
     "Metadata": {
         "Name": "Alternate Poses",
         "Author": "Fayt",
-        "Version": "1.0.0",
-        "Description": "More emotes for Hugs and More (required): side hug, hold hands, fist bump, twirl and bow. Press F near a player who also has this addon. Works on any server. This mod was created with the assistance of AI."
+        "Version": "1.1.0",
+        "Description": "More emotes for Hugs and More (required): side hug, hold hands, twirl and bow. Press F near a player who also has this addon. Works on any server. This mod was created with the assistance of AI."
     }
 }
